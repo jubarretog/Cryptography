@@ -41,22 +41,28 @@ class Rot13:
 
     def encrypt(self, plaintext):
         for i in range(len(plaintext)):
+            # Ignore spaces
             if plaintext[i] == " ":
                 self.ciphertext += " "
                 continue
+            # Shift letter
             code = (alpha[plaintext[i]] + 13) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.ciphertext += letter
+
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext):
         for i in range(len(ciphertext)):
+            # Ignore spaces
             if ciphertext[i] == " ":
                 self.plaintext += " "
                 continue
+            # Shift letter
             code = (alpha[ciphertext[i]] - 13) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.plaintext += letter
+
         return f"This is your message: {self.plaintext}\n"
 
 
@@ -74,16 +80,19 @@ def main():
         menu()
         rot13 = Rot13()
         choice = input("Enter your choice: ")
+        # Encrypt
         if choice == "1":
             plaintext = input("Enter plaintext: ").upper()
             cipher = rot13.encrypt(plaintext)
             print(cipher)
             continue
+        # Decrypt
         if choice == "2":
             ciphertext = input("Enter ciphertext: ").upper()
             message = rot13.decrypt(ciphertext)
             print(message)
             continue
+        # Exit
         if choice == "3":
             print("Thank you for using this program")
             exit()

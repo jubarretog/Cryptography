@@ -41,24 +41,30 @@ class OneTimePad:
         self.ciphertext = []
 
     def encrypt(self, plaintext, key):
+        # Check key length
         if len(key) < len(plaintext):
             return "Key must be at least as long as the plaintext message\n"
+        # Make XOR operation
         for i in range(len(plaintext)):
             code = (alpha[plaintext[i]] + alpha[key[i]]) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.ciphertext.append(letter)
         result = "".join(self.ciphertext)
+
         return f"This is your encrypted message: {result}\n"
 
     def decrypt(self, ciphertext, key):
+        # Check key length
         if len(key) < len(ciphertext):
             return "Key must be at least as long as the cyphertext message\n"
+        # Make XOR operation
         for i in range(len(ciphertext)):
             code = (alpha[ciphertext[i]] - alpha[key[i]]) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.plaintext.append(letter)
         result = "".join(self.plaintext)
-        return f"This is your message: {self.plaintext}\n"
+
+        return f"This is your message: {result}\n"
 
 
 def menu():
@@ -75,18 +81,21 @@ def main():
         menu()
         otp = OneTimePad()
         choice = input("Enter your choice: ")
+        # Encrypt
         if choice == "1":
             plaintext = input("Enter plaintext: ").upper()
             key = input("Enter key: ").upper()
             cipher = otp.encrypt(plaintext, key)
             print(cipher)
             continue
+        # Decrypt
         if choice == "2":
             ciphertext = input("Enter ciphertext: ").upper()
             key = input("Enter key: ").upper()
             message = otp.decrypt(ciphertext, key)
             print(message)
             continue
+        # Exit
         if choice == "3":
             print("Thank you for using this program")
             exit()

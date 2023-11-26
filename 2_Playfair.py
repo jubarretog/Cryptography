@@ -50,6 +50,7 @@ class Playfair:
             else:
                 self.ciphertext += matrix[coor[0]][coor[3]]
                 self.ciphertext += matrix[coor[2]][coor[1]]
+
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext, key):
@@ -76,6 +77,7 @@ class Playfair:
             else:
                 self.ciphertext += matrix[coor[0]][coor[3]]
                 self.ciphertext += matrix[coor[2]][coor[1]]
+
         return f"This is your message: {self.ciphertext}\n"
 
     def matrix(self, key):
@@ -97,6 +99,7 @@ class Playfair:
             for j in range(5):
                 matrix[i][j] = new_key[k]
                 k += 1
+
         return matrix
 
     def get_coordinates(self, pair, matrix):
@@ -111,6 +114,7 @@ class Playfair:
                 if pair[1] == matrix[i][j]:
                     coor.append(i)
                     coor.append(j)
+
         return coor
 
 
@@ -128,18 +132,21 @@ def main():
         menu()
         pfair = Playfair()
         choice = input("Enter your choice: ")
+        # Encrypt
         if choice == "1":
             plaintext = input("Enter plaintext: ").upper()
             key = input("Enter key: ")
             cipher = pfair.encrypt(plaintext, key)
             print(cipher)
             continue
+        # Decrypt
         if choice == "2":
             ciphertext = input("Enter ciphertext: ").upper()
             key = input("Enter key: ")
             message = pfair.decrypt(ciphertext, key)
             print(message)
             continue
+        # Exit
         if choice == "3":
             print("Thank you for using this program")
             exit()

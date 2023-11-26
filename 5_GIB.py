@@ -45,12 +45,15 @@ class GarbageInBetween:
         self.plaintext = ""
 
     def encrypt(self, plaintext):
+        # Check length of ciphertext
         while True:
             long = int(input("Enter length of ciphertext: "))
             if long >= len(plaintext):
                 break
             print("Invalid length, try again")
+        # Get position of real characters
         pos = self.real_char(plaintext, long)
+        # Fill ciphertext with garbage characters
         count = 0
         for i in range(long):
             if (i + 1) in pos:
@@ -58,17 +61,22 @@ class GarbageInBetween:
                 count += 1
             else:
                 self.ciphertext += random.choice(alpha)
+
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext):
+        # Get position of real characters
         pos = self.real_char(ciphertext, "d")
+        # Extract plaintext from ciphertext
         for i in range(len(ciphertext)):
             if (i + 1) in pos:
                 self.plaintext += ciphertext[i]
+
         return f"This is your message: {self.plaintext}\n"
 
     def real_char(self, text, mode):
         pos = []
+        # Encrypt
         if type(mode) is int:
             n = len(text)
             while n > 0:
@@ -78,6 +86,7 @@ class GarbageInBetween:
                     continue
                 pos.append(key)
                 n -= 1
+        # Decrypt
         else:
             n = int(input("Enter number of real characters: "))
             while n > 0:
@@ -87,6 +96,7 @@ class GarbageInBetween:
                     continue
                 pos.append(key)
                 n -= 1
+
         return pos
 
 
@@ -104,16 +114,19 @@ def main():
         menu()
         gib = GarbageInBetween()
         choice = input("Enter your choice: ")
+        # Encrypt
         if choice == "1":
             plaintext = input("Enter plaintext: ").upper()
             cipher = gib.encrypt(plaintext)
             print(cipher)
             continue
+        # Decrypt
         if choice == "2":
             ciphertext = input("Enter ciphertext: ").upper()
             message = gib.decrypt(ciphertext)
             print(message)
             continue
+        # Exit
         if choice == "3":
             print("Thank you for using this program")
             exit()

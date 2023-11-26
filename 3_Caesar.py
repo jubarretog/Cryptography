@@ -42,22 +42,28 @@ class Caesar:
 
     def encrypt(self, plaintext, key):
         for i in range(len(plaintext)):
+            # Ignore spaces
             if plaintext[i] == " ":
                 self.ciphertext += " "
                 continue
+            # Shift letter
             code = (alpha[plaintext[i]] + key) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.ciphertext += letter
+
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext, key):
         for i in range(len(ciphertext)):
+            # Ignore spaces
             if ciphertext[i] == " ":
                 self.plaintext += " "
                 continue
+            # Shift letter
             code = (alpha[ciphertext[i]] - key) % 26
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.plaintext += letter
+
         return f"This is your message: {self.plaintext}\n"
 
 
@@ -75,18 +81,21 @@ def main():
         menu()
         caesar = Caesar()
         choice = input("Enter your choice: ")
+        # Encrypt
         if choice == "1":
             plaintext = input("Enter plaintext: ").upper()
             key = int(input("Enter key: "))
             cipher = caesar.encrypt(plaintext, key)
             print(cipher)
             continue
+        # Decrypt
         if choice == "2":
             ciphertext = input("Enter ciphertext: ").upper()
             key = int(input("Enter key: "))
             message = caesar.decrypt(ciphertext, key)
             print(message)
             continue
+        # Exit
         if choice == "3":
             print("Thank you for using this program")
             exit()
