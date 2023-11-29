@@ -10,3 +10,5 @@ A recopilation of diferent cyphers and encodings
 - Vigenere
 - Hill
 - Homophonic
+- Turning Grille
+- RSA

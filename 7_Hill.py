@@ -1,5 +1,8 @@
 # Hill Cipher
-#
+# Consists of a matrix with the plaintext and a key matrix
+# Key matrix must be invertible
+# To encrypt, multiply plaintext matrix with key matrix in modulo 26
+# To decrypt, multiply ciphertext matrix with inverse key matrix in modulo 26
 
 
 # Alphabet
@@ -48,10 +51,11 @@ class Hill:
 
     def encrypt(self, plaintext, key, dim):
         # Check if plaintext or key overpassed matrix dimension
+        plaintext = plaintext.replace(" ", "")
+        key = key.replace(" ", "")
         if (len(plaintext) > (dim * dim)) or (len(key) > (dim * dim)):
             return "Plaintext or key overpassed matrix dimension\n"
         # Fill plaintext matrix
-        plaintext = plaintext.replace(" ", "")
         self.pmatrix = list(plaintext)
         for i in range(len(plaintext)):
             self.pmatrix[i] = alpha[plaintext[i]]
@@ -59,7 +63,6 @@ class Hill:
             self.pmatrix.append(0)
         self.pmatrix = np.array(self.pmatrix).reshape(dim, dim)
         # Fill key matrix
-        key = key.replace(" ", "")
         self.kmatrix = list(key)
         for i in range(len(key)):
             self.kmatrix[i] = alpha[key[i]]
@@ -177,6 +180,9 @@ if __name__ == "__main__":
 
 # Example
 
+# Dimension
+# 2
+
 # Message
 # JULY
 
@@ -185,3 +191,18 @@ if __name__ == "__main__":
 
 # Ciphertext
 # DELW
+
+
+# Example 2
+
+# Dimension
+# 5
+
+# Ciphertext
+# VKFZRVWTIAZSMISGKA
+
+# Key
+# LIDH
+
+# Message
+#
