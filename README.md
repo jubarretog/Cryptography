@@ -15,4 +15,4 @@ A recopilation of diferent cyphers and encodings
 
 ## Elliptic-curve cryptography
 
-To see an implementation for this kind of encription you can visit the following repository: https://github.com/ranea/ccepy
+To see an implementation for this kind of encryption you can visit https://github.com/ranea/ccepy
