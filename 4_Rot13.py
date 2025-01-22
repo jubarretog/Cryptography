@@ -43,7 +43,6 @@ class Rot13:
         for i in range(len(plaintext)):
             # Ignore spaces
             if plaintext[i] == " ":
-                self.ciphertext += " "
                 continue
             # Shift letter
             code = (alpha[plaintext[i]] + 13) % 26
@@ -56,7 +55,6 @@ class Rot13:
         for i in range(len(ciphertext)):
             # Ignore spaces
             if ciphertext[i] == " ":
-                self.plaintext += " "
                 continue
             # Shift letter
             code = (alpha[ciphertext[i]] - 13) % 26
@@ -67,12 +65,13 @@ class Rot13:
 
 
 def menu():
+    print("--------------------------")
     print("xX Rot13 Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():
@@ -117,4 +116,4 @@ if __name__ == "__main__":
 # 3
 
 # Message
-# IFTHE NSAHA STIME TOREA DMYEM AILIW ISHTH EYSEN DMEAB LOODY
+# IFTHENSAHASTIMETOREADMYEMAILIWISHTHEYSENDMEABLOODY

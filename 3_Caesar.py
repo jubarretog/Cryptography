@@ -1,6 +1,6 @@
 # Caesar's Cipher
 # The key is a number from 1 to 25
-# Each letter in the message is shifted as many positions in the alphabet as the key
+# Each letter in the message is shifted upper as many positions in the alphabet as the key
 
 
 # Alphabet
@@ -44,7 +44,6 @@ class Caesar:
         for i in range(len(plaintext)):
             # Ignore spaces
             if plaintext[i] == " ":
-                self.ciphertext += " "
                 continue
             # Shift letter
             code = (alpha[plaintext[i]] + key) % 26
@@ -57,7 +56,6 @@ class Caesar:
         for i in range(len(ciphertext)):
             # Ignore spaces
             if ciphertext[i] == " ":
-                self.plaintext += " "
                 continue
             # Shift letter
             code = (alpha[ciphertext[i]] - key) % 26
@@ -68,12 +66,13 @@ class Caesar:
 
 
 def menu():
+    print("--------------------------")
     print("xX Caesar's Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():
@@ -114,7 +113,7 @@ if __name__ == "__main__":
 # Example 1
 
 # Message
-# RETUR NTORO ME
+# RETURN TO ROME
 
 # Key
 # 3
@@ -142,7 +141,7 @@ if __name__ == "__main__":
 # 3
 
 # Message
-# ITISC LAIME DTHEE ARLIE STKNO WNREF ERENC ETOTH ISTYP EOFCI PHERI SINTH EKAMA SUTRA WHICH SAYSW OMENS HOULD LEARN THEAR TOFSE CRETW RITIN GTOCO NCEAL THEIR LIASO NS
+# ITISCLAIMEDTHEEARLIESTKNOWNREFERENCETOTHISTYPEOFCIPHERISINTHEKAMASUTRAWHICHSAYSWOMENSHOULDLEARNTHEARTOFSECRETWRITINGTOCONCEALTHEIRLIASONS
 
 
 # Example 4
@@ -154,4 +153,4 @@ if __name__ == "__main__":
 # 3
 
 # Cipher message
-# ZH ZLOO DWWDFN DW GDZQ WKURXJK WKH OHIW IODQ
+# ZHZLOODWWDFNDWGDZQWKURXJKWKHOHIWIODQN

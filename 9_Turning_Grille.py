@@ -9,11 +9,36 @@ import numpy as np
 
 class TuringGrille:
     def __init__(self):
+        self.holes = []
         self.holeMatrix = []
         self.pMatrix = []
         self.cMatrix = []
         self.plaintext = ""
         self.ciphertext = ""
+
+    def addHoles(self, dim):
+        n = int(input("Insert the number of holes: "))
+        while n > 0:
+            hole = int(input("Enter position for the next hole: "))
+            if hole > (dim * dim) or hole < 1 or type(hole) != int:
+                print("Invalid position, try again")
+                continue
+            self.holes.append(hole - 1)
+            n -= 1
+
+    def rotRight(self, matrix, dim):
+        newMatrix = np.full((dim, dim), "")
+        for i in range(dim):
+            for j in range(dim):
+                newMatrix[j][dim - 1 - i] = matrix[i][j]
+        return newMatrix
+
+    def rotLeft(self, matrix, dim):
+        newMatrix = np.full((dim, dim), "")
+        for i in range(dim):
+            for j in range(dim):
+                newMatrix[dim - 1 - j][i] = matrix[i][j]
+        return newMatrix
 
     def encrypt(self, plaintext, dim, mode):
         # Check if plaintext or key overpassed matrix dimension
@@ -23,19 +48,11 @@ class TuringGrille:
         # Fill plaintext with X
         while len(plaintext) < (dim * dim):
             plaintext += "X"
-        # Recive and check holes
-        n = int(input("Insert the number of holes: "))
-        holes = []
-        while n > 0:
-            hole = int(input("Enter position of hole: "))
-            if hole > (dim * dim):
-                print("Invalid position, try again")
-                continue
-            holes.append(hole - 1)
-            n -= 1
+        # Receive and check holes
+        self.addHoles(dim)
         # Put holes in matrix
         self.holeMatrix = np.full((dim, dim), "")
-        for element in holes:
+        for element in self.holes:
             self.holeMatrix[element // dim][element % dim] = "X"
         # Fill matrix with plaintext
         self.pMatrix = np.full((dim, dim), "")
@@ -58,38 +75,26 @@ class TuringGrille:
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext, dim, mode):
-        # Check if plaintext or key overpassed matrix dimension
+        # Check if ciphertext or key overpassed matrix dimension
         ciphertext = ciphertext.replace(" ", "")
         if len(ciphertext) > (dim * dim):
-            return "Ciphertext overpassed matrix dimension\n"
+            return "Plaintext overpassed matrix dimension\n"
         # Fill plaintext with X
         while len(ciphertext) < (dim * dim):
             ciphertext += "X"
-        # Recive and check holes
-        n = int(input("Insert the number of holes: "))
-        holes = []
-        while n > 0:
-            hole = int(input("Enter position of hole: "))
-            if hole > (dim * dim):
-                print("Invalid position, try again")
-                continue
-            holes.append(hole - 1)
-            n -= 1
+        # Receive and check holes
+        self.addHoles(dim)
         # Put holes in matrix
         self.holeMatrix = np.full((dim, dim), "")
-        for element in holes:
+        for element in self.holes:
             self.holeMatrix[element // dim][element % dim] = "X"
-        print(self.holeMatrix)
         # Fill matrix with ciphertext
         self.cMatrix = np.full((dim, dim), "")
         pos = 0
-        while pos < len(ciphertext):
-            for i in range(dim):
-                for j in range(dim):
-                    self.cMatrix[i][j] = ciphertext[pos]
-                    pos += 1
-        print(self.cMatrix)
-
+        for i in range(dim):
+            for j in range(dim):
+                self.cMatrix[i][j] = ciphertext[pos]
+                pos += 1
         # Get plaintext
         for k in range(4):
             for i in range(dim):
@@ -100,17 +105,17 @@ class TuringGrille:
                 self.holeMatrix = self.rotLeft(self.holeMatrix, dim)
             else:
                 self.holeMatrix = self.rotRight(self.holeMatrix, dim)
-
         return f"This is your message: {self.plaintext}\n"
 
 
 def menu():
+    print("--------------------------")
     print("xX Turing Grille Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():
@@ -123,7 +128,7 @@ def main():
             dim = int(input("Enter dimension of matrix: "))
             mode = int(
                 input(
-                    "Enter direction of rotation (1 for left any other number for right): "
+                    "Enter direction of rotation for the grille (1 for left, any other number for right): "
                 )
             )
             plaintext = input("Enter plaintext: ").upper()
@@ -135,7 +140,7 @@ def main():
             dim = int(input("Enter dimension of matrix: "))
             mode = int(
                 input(
-                    "Enter direction of rotation (1 for left any other number for right): "
+                    "Enter direction of rotation (1 for left, any other number for right): "
                 )
             )
             ciphertext = input("Enter ciphertext: ").upper()
@@ -160,6 +165,9 @@ if __name__ == "__main__":
 
 # Example 1
 
+# Dimension
+# 4
+
 # Message
 # JIM ATTACKS AT DAWN
 
@@ -174,12 +182,15 @@ if __name__ == "__main__":
 
 # Example 2
 
+# Dimension
+# 9
+
 # Cipher message
-# TESHN INCIG LSRGY LRIUS PITSA TLILM REENS ATTOG SIAWG IPVER TOTEH HVAEA XITDT UAIME RANPM TLHIE X
+# TESHN INCIG LSRGY LRIUS PITSA TLILM REENS ATTOG SIAWG IPVER TOTEH HVAEA XITDT UAIME RANPM TLHIE I
 
 # Holes
 # 21 holes
 # 1 4 6 12 18 20 25 30 32 35 41 43 45 49 53 55 60 65 68 72 75
 
 # Message
-# THISISAMESSAGETHATIAMENCRYPTINGSWITHATURNINGGRILLETOSPROVIDETHXSILLUSTRATSIVEEXAMPLE
+# THISISAMESSAGETHATIAMENCRYPTINGSWITHATURNINGGRILLETOSPROVIDETHISILLUSTRATSIVEEXAMPLE

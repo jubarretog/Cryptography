@@ -46,7 +46,7 @@ class Vigenere:
     def encrypt(self, plaintext, key):
         # Complete plaintext with X if necessary to make it divisible by t
         plaintext = plaintext.replace(" ", "")
-        t = int(input("Enter length of slices: "))
+        t = int(input("Enter length of slices (t): "))
         while (len(plaintext) % t) != 0:
             plaintext += "X"
         # Make key as long as plaintext
@@ -67,6 +67,8 @@ class Vigenere:
         return f"This is your encrypted message: {result.strip()}\n"
 
     def decrypt(self, ciphertext, key):
+        # Get slice's length
+        t = int(input("Enter length of slices (t): "))
         # Make key as long as ciphertext
         ciphertext = ciphertext.replace(" ", "")
         key = key.replace(" ", "")
@@ -79,17 +81,22 @@ class Vigenere:
             letter = list(alpha.keys())[list(alpha.values()).index(code)]
             self.plaintext.append(letter)
         result = "".join(self.plaintext)
-
+        # Complete plaintext with X if necessary to make it divisible by t
+        while (len(result) % t) != 0:
+            result += "X"
+        # Cut plaintext into groups t of characters
+        result = " ".join([result[i : i + t] for i in range(0, len(result), t)])
         return f"This is your message: {result}\n"
 
 
 def menu():
+    print("--------------------------")
     print("xX Vigenere Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():
@@ -150,7 +157,7 @@ if __name__ == "__main__":
 # Key
 # CRYPTO
 
-# Slice length
+# Slice length (t)
 # 3
 
 # Ciphertext

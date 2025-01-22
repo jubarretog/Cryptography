@@ -63,12 +63,13 @@ class Homophonic:
 
 
 def menu():
+    print("--------------------------")
     print("xX Homophonic Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():

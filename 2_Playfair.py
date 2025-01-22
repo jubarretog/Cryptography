@@ -119,12 +119,13 @@ class Playfair:
 
 
 def menu():
+    print("--------------------------")
     print("xX Playfair Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():

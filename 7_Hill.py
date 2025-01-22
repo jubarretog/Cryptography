@@ -3,7 +3,8 @@
 # Key matrix must be invertible
 # To encrypt, multiply plaintext matrix with key matrix in modulo 26
 # To decrypt, multiply ciphertext matrix with inverse key matrix in modulo 26
-
+# In this implementation the matrices are filled by rows
+# It works with any dimension of the key matrix
 
 # Alphabet
 alpha = {
@@ -49,19 +50,49 @@ class Hill:
         self.plaintext = ""
         self.ciphertext = ""
 
+    def modular_inverse(a, mod):
+        a = a % mod
+        for x in range(1, mod):
+            if (a * x) % mod == 1:
+                return x
+        raise ValueError(f"No modular inverse exists for {a} under modulo {mod}")
+
+    def matrix_modular_inverse(matrix, mod):
+        # Compute the determinant modulus
+        det = int(round(np.linalg.det(matrix)))
+        det_mod = det % mod
+        # Compute modular inverse of the determinant
+        try:
+            det_inv = Hill.modular_inverse(det_mod, mod)
+        except ValueError:
+            raise ValueError(
+                "Matrix determinant has no modular inverse, so the matrix is not invertible under this modulus."
+            )
+        # Compute the adjugate matrix (transpose of cofactor matrix)
+        n = len(matrix)
+        cofactor_matrix = np.zeros((n, n), dtype=int)
+        for i in range(n):
+            for j in range(n):
+                minor = np.delete(np.delete(matrix, i, axis=0), j, axis=1)
+                cofactor = int(round(np.linalg.det(minor)))
+                cofactor_matrix[i, j] = ((-1) ** (i + j)) * cofactor
+        # Transpose of the cofactor matrix
+        adjugate_matrix = cofactor_matrix.T
+        # Multiply adjugate by determinant's modular inverse make module operation
+        inv_matrix = (det_inv * adjugate_matrix) % mod
+        return inv_matrix
+
     def encrypt(self, plaintext, key, dim):
-        # Check if plaintext or key overpassed matrix dimension
-        plaintext = plaintext.replace(" ", "")
+        # Check if key overpass matrix dimension
         key = key.replace(" ", "")
-        if (len(plaintext) > (dim * dim)) or (len(key) > (dim * dim)):
-            return "Plaintext or key overpassed matrix dimension\n"
-        # Fill plaintext matrix
-        self.pmatrix = list(plaintext)
-        for i in range(len(plaintext)):
-            self.pmatrix[i] = alpha[plaintext[i]]
-        while len(self.pmatrix) < (dim * dim):
-            self.pmatrix.append(0)
-        self.pmatrix = np.array(self.pmatrix).reshape(dim, dim)
+        if len(key) > (dim * dim):
+            return "Key overpass matrix dimension\n"
+        # Separate plaintext in n-grams
+        plaintext = plaintext.replace(" ", "")
+        if len(plaintext) % dim != 0:
+            plaintext += "X" * (dim - (len(plaintext) % dim))
+        for i in range(0, len(plaintext), dim):
+            self.pmatrix.append(plaintext[i : i + dim])
         # Fill key matrix
         self.kmatrix = list(key)
         for i in range(len(key)):
@@ -70,75 +101,74 @@ class Hill:
             self.kmatrix.append(0)
         self.kmatrix = np.array(self.kmatrix).reshape(dim, dim)
         # Check if key matrix is invertible and can be used
-        self.kmatrix = Matrix(self.kmatrix)
         try:
-            self.kmatrix.inv_mod(26)
+            Hill.matrix_modular_inverse(self.kmatrix, 26)
         except:
             return "Key matrix is not invertible, you can't use this key\n"
         self.kmatrix = list(self.kmatrix)
         self.kmatrix = np.array(self.kmatrix).reshape(dim, dim)
-        # Multiply ciphertext matrix with inverse key matrix in modulo 26
-        self.cmatrix = np.matmul(self.pmatrix, self.kmatrix)
-        self.cmatrix = self.cmatrix % 26
+        # Multiply n-grams with key matrix in modulo 26
+        for row in self.pmatrix:
+            row = np.array([alpha[letter] for letter in row])
+            row = np.matmul(row, self.kmatrix)
+            row = row % 26
+            for element in row:
+                self.cmatrix.append(element)
         # Convert ciphertext matrix to ciphertext
-        for i in range(dim):
-            for j in range(dim):
-                letter = list(alpha.keys())[
-                    list(alpha.values()).index(self.cmatrix[i][j])
-                ]
-                self.ciphertext += letter
+        for letter in self.cmatrix:
+            letter = list(alpha.keys())[list(alpha.values()).index(letter)]
+            self.ciphertext += letter
 
         return f"This is your encrypted message: {self.ciphertext}\n"
 
     def decrypt(self, ciphertext, key, dim):
-        # Check if plaintext or key overpassed matrix dimension
-        if (len(ciphertext) > (dim * dim)) or (len(key) > (dim * dim)):
-            return "Plaintext or key overpassed matrix dimension\n"
-        # Fill plaintext matrix
-        ciphertext = ciphertext.replace(" ", "")
-        self.cmatrix = list(ciphertext)
-        for i in range(len(ciphertext)):
-            self.cmatrix[i] = alpha[ciphertext[i]]
-        while len(self.cmatrix) < (dim * dim):
-            self.cmatrix.append(0)
-        self.cmatrix = np.array(self.cmatrix).reshape(dim, dim)
-        # Fill key matrix
+        # Check if key overpass matrix dimension
         key = key.replace(" ", "")
+        if len(key) > (dim * dim):
+            return "Key overpass matrix dimension\n"
+        # Separate plaintext in n-grams
+        ciphertext = ciphertext.replace(" ", "")
+        if len(ciphertext) % dim != 0:
+            ciphertext += "X" * (dim - (len(ciphertext) % dim))
+        for i in range(0, len(ciphertext), dim):
+            self.cmatrix.append(ciphertext[i : i + dim])
+        # Fill key matrix
         self.kmatrix = list(key)
         for i in range(len(key)):
             self.kmatrix[i] = alpha[key[i]]
         while len(self.kmatrix) < (dim * dim):
             self.kmatrix.append(0)
         self.kmatrix = np.array(self.kmatrix).reshape(dim, dim)
-        # Calculate matrix modular inverse
-        self.kmatrix = Matrix(self.kmatrix)
+        # Check if key matrix is invertible and can be used
         try:
-            self.kmatrix = self.kmatrix.inv_mod(26)
+            self.kmatrix = Hill.matrix_modular_inverse(self.kmatrix, 26)
         except:
-            return "Key matrix is not invertible\n"
+            return "Key matrix is not invertible, you can't use this key\n"
         self.kmatrix = list(self.kmatrix)
         self.kmatrix = np.array(self.kmatrix).reshape(dim, dim)
-        # Multiply ciphertext matrix with inverse key matrix in modulo 26
-        self.pmatrix = np.matmul(self.cmatrix, self.kmatrix)
-        self.pmatrix = self.pmatrix % 26
-        # Convert plaintext matrix to plaintext
-        for i in range(dim):
-            for j in range(dim):
-                letter = list(alpha.keys())[
-                    list(alpha.values()).index(self.pmatrix[i][j])
-                ]
-                self.plaintext += letter
+        # Multiply n-grams with key matrix in modulo 26
+        for row in self.cmatrix:
+            row = np.array([alpha[letter] for letter in row])
+            row = np.matmul(row, self.kmatrix)
+            row = row % 26
+            for element in row:
+                self.pmatrix.append(element)
+        # Convert ciphertext matrix to ciphertext
+        for letter in self.pmatrix:
+            letter = list(alpha.keys())[list(alpha.values()).index(letter)]
+            self.plaintext += letter
 
         return f"This is your message: {self.plaintext}\n"
 
 
 def menu():
+    print("--------------------------")
     print("xX Hill Cipher Xx")
-    print("------------------------")
+    print("--------------------------")
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Exit")
-    print("------------------------")
+    print("--------------------------")
 
 
 def main():
@@ -148,7 +178,7 @@ def main():
         choice = input("Enter your choice: ")
         # Encrypt
         if choice == "1":
-            dim = int(input("Enter dimension of matrix: "))
+            dim = int(input("Enter dimension of the key matrix: "))
             plaintext = input("Enter plaintext: ").upper()
             key = input("Enter key: ").upper()
             cipher = hill.encrypt(plaintext, key, dim)
@@ -156,7 +186,7 @@ def main():
             continue
         # Decrypt
         if choice == "2":
-            dim = int(input("Enter dimension of matrix: "))
+            dim = int(input("Enter dimension of the key matrix: "))
             ciphertext = input("Enter ciphertext: ").upper()
             key = input("Enter key: ").upper()
             message = hill.decrypt(ciphertext, key, dim)
@@ -196,7 +226,7 @@ if __name__ == "__main__":
 # Example 2
 
 # Dimension
-# 5
+# 2
 
 # Ciphertext
 # VKFZRVWTIAZSMISGKA
@@ -205,4 +235,19 @@ if __name__ == "__main__":
 # LIDH
 
 # Message
-#
+# NUMBERTHEORYISEASY
+
+
+# Example 3
+
+# Dimension
+# 3
+
+# Ciphertext
+# BCBAIECPSSYNRNAMACDSMEIIPVDBPL
+
+# Key
+# GYBNQKURP
+
+# Message
+# THISISHILLWITHBIGGERKEYMATRIXX

@@ -1,6 +1,6 @@
 # Cryptography
 
-A recopilation of diferent cyphers and encodings
+A recopilation of different cyphers and encodings
 
 - One-Time-Pad
 - Playfair
@@ -11,4 +11,5 @@ A recopilation of diferent cyphers and encodings
 - Hill
 - Homophonic
 - Turning Grille
+- Data Encryption Standard (DES)
 - RSA
