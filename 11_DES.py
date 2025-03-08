@@ -62,9 +62,9 @@ def main():
             imgBytes = img.tobytes()
             key = input("Enter 8 bytes key: ").upper().encode()
             encBytes = des.encrypt(imgBytes, key)
-            with open("11_DES_enc.txt", "wb") as f:
+            with open("8_DES_enc.txt", "wb") as f:
                 f.write(encBytes)
-            print("Encrypted bytes from image saved in the 11_DES_enc.txt file\n")
+            print("Encrypted bytes from image saved in the 8_DES_enc.txt file\n")
             continue
         # Decrypt
         if choice == "2":
@@ -73,7 +73,7 @@ def main():
             img = Image.open(imgName)
             print("The original size of the image is:", img.size, "wxh")
             key = input("Enter 8 bytes key: ").upper().encode()
-            with open("11_DES_enc.txt", "rb") as f:
+            with open("8_DES_enc.txt", "rb") as f:
                 b64Bytes = f.read()
             encBytes = base64.b64decode(b64Bytes)
             imgBytes = des.decrypt(encBytes, key)

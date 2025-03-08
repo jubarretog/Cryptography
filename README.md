@@ -1,6 +1,7 @@
 # Cryptography
 
-A recopilation of different cyphers and encodings
+This is a recopilation of different cyphers and encodings to understand and apply crypthografic methods.
+You can find various scripts with the implementation of the following methods:
 
 - One-Time-Pad
 - Playfair
@@ -11,5 +12,6 @@ A recopilation of different cyphers and encodings
 - Hill
 - Homophonic
 - Turning Grille
-- Data Encryption Standard (DES)
 - RSA
+- Data Encryption Standard (DES)
+- Advanced Encryption Standard (DES)
